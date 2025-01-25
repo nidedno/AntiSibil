@@ -1,0 +1,49 @@
+# Antisibil
+
+Antisibil is a project aimed at automating the handling of crypto projects using Selenium. It is designed to simplify interactions with various cryptocurrency platforms and services, allowing users to quickly and efficiently perform routine tasks.
+
+## Project Goals
+
+The main goal of Antisibil is to provide users with tools for automating processes related to cryptocurrency projects. This includes:
+
+- Automating interactions with web applications
+- Simplifying the execution of routine tasks
+- Increasing efficiency in working with crypto projects
+
+## Development Plans
+
+### Version 0.1
+
+At this stage of development (v0.1), the project focuses on:
+
+- Implementing basic logic for working with Selenium
+- Developing handwritten scripts for automating core processes
+- Creating documentation and usage examples
+
+## Usage
+
+To run the automation scripts, simply execute the `main.py` file in the console:
+
+```bash
+python main.py
+```
+
+## Contribution
+
+If you would like to contribute to the development of Antisibil, you can:
+
+1. Fork the repository.
+2. Make your changes and test them.
+3. Submit a pull request describing your changes.
+
+## License
+
+This project is licensed under the MIT License. For more details, see the [LICENSE](LICENSE) file.
+
+## Contact
+
+If you have any questions or suggestions, feel free to reach out via email: your-email@example.com.
+
+---
+
+Thank you for your interest in the Antisibil project! We hope it will be useful for you in automating your work with crypto projects.

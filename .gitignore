@@ -1,0 +1,12 @@
+# ignore cache
+__pycache__ 
+
+# ignore warning files
+accounts/*
+projects/*
+scenarious/*
+
+# stay folders
+!accounts/.gitkeep 
+!projects/.gitkeep
+!scenarious/.gitkeep
