@@ -32,7 +32,6 @@ def create_accounts_table(accounts):
         # read all available fields.
         fields = read_json(SETTINGS_FOLDER + "account.json")
         with dpg.table(tag=TAG_ACCOUNTS_TABLE, label=TAG_ACCOUNTS_TABLE, parent=TAG_ACCOUNTS):
-
             fieldsNames = tuple(fields.keys())
             # Add columns
             for field in fieldsNames:
@@ -40,8 +39,8 @@ def create_accounts_table(accounts):
 
             for account in accounts:
                 add_account(account, fields)
-    except:
-        print("Problem whle table creation.")
+    except Exception as e:
+        print("Problem whle table creation:", e)
 
 # Method to add accounts.
 def add_account(account, fields):
@@ -49,16 +48,14 @@ def add_account(account, fields):
     with dpg.table_row(parent=TAG_ACCOUNTS_TABLE):
         for field in fields.keys():
             value = "~" # it means that it's empty.
-            secret = False
-
+            secret = fields[field]['secret']
+            readonly = fields[field]['readonly']
+            print(secret, readonly, field)
             if (account.contains_field(field)):
                 value = account.get(field)
-            
-            if (fields[field] == "secret"):
-                secret = True
 
             tag = account.get('filename') + field
-            input_field = dpg.add_input_text(default_value=value, width=-1, password=secret, tag=tag, readonly=True)
+            input_field = dpg.add_input_text(default_value=value, width=-1, password=secret, tag=tag, readonly=readonly)
             with dpg.popup(input_field, mousebutton=dpg.mvMouseButton_Right, ):
                 # Add menu options to the context menu
                 # TODO: fix strange behaviour with positioning.
@@ -119,6 +116,6 @@ def refresh_table():
             dpg.delete_item(TAG_ACCOUNTS_TABLE)
         accounts = import_accounts()
     except Exception as e:
-        dpg.add_text("No accounts")
+        dpg.add_text("No accounts", e)
     else:
         create_accounts_table(accounts)

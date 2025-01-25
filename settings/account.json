@@ -1,18 +1,18 @@
 {
     "name" : {
-        "filter": "default",
+        "secret": false,
         "readonly" : false
     },
     "mail" : {
-        "filter": "default",
+        "secret": false,
         "readonly" : false
     },
     "password" : {
-        "filter": "default",
+        "secret": false,
         "readonly" : false
     },
     "comment" : {
-        "filter": "default",
+        "secret": false,
         "readonly" : false
     }
 }

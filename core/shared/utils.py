@@ -14,7 +14,7 @@ def import_accounts():
             account_json['filename'] = filename
 
             account = Account.from_dict(account_json)
-            print(account)
+            #print(account)
             accounts.append(account)
 
     if (len(accounts) == 0):

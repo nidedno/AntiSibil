@@ -23,12 +23,14 @@ def create_account_settings():
     with dpg.window(label="Account settings", modal=True, tag=TAG_SETTINGS_ACCOUNT, autosize=True,show=True, on_close=lambda: dpg.delete_item(TAG_SETTINGS_ACCOUNT)):
         with dpg.table(label="Account settings", tag=TAG_SETTINGS_TABLE):
             dpg.add_table_column(label="Key")
-            dpg.add_table_column(label="Option of key")
+            dpg.add_table_column(label="Secret")
+            dpg.add_table_column(label="Readonly")
 
             for field in fields.keys():
                 with dpg.table_row():
                     dpg.add_input_text(tag=field, width=-1, default_value=field)
-                    dpg.add_combo(["default", "secret"], label="filter", tag=field+"_filter", default_value=fields[field])
+                    dpg.add_combo([True, False], tag=field+"_secret", default_value=fields[field]['secret'])
+                    dpg.add_combo([True, False], tag=field+"_readonly", default_value=fields[field]['readonly'])
 
         with dpg.group(horizontal=True):
             dpg.add_button(label="Save", callback=save_settings_option)
@@ -39,11 +41,15 @@ def create_account_settings():
 
 def add_settings_option(fields):
     option = 'option'+ str(len(fields.keys()))
-    fields[option] = 'default'
+    fields[option] = {
+        "secret" : False,
+        "readonly" : False
+    }
 
     with dpg.table_row(parent=TAG_SETTINGS_TABLE):
         dpg.add_input_text(tag=option, width=-1, default_value='')
-        dpg.add_combo(["default", "secret"], label="filter", tag=option+"_filter", default_value='default')
+        dpg.add_combo([True, False], tag=option, default_value=False)
+        dpg.add_combo([True, False], tag=option, default_value=False)
 
 # Save function, now:
 # 0 - it's a key
@@ -57,9 +63,13 @@ def save_settings_option():
         row_items_ids = dpg.get_item_children(rows_id)[1]
 
         key = dpg.get_value(row_items_ids[0])
-        filter = dpg.get_value(row_items_ids[1])
+        secret = dpg.get_value(row_items_ids[1]) == "True"
+        readonly = dpg.get_value(row_items_ids[2]) == "True"
 
-        account_configuration[key] = filter
+        account_configuration[key] = {
+            'secret' : secret,
+            'readonly' : readonly
+        }
 
     # we override current account.json
     with open(SETTINGS_FOLDER + "account.json", 'w') as configuration_file:

@@ -6,7 +6,6 @@ from ..shared.constants import ACCOUNTS_FOLDER
 # Contains account and all info which it can contains.
 class Account:
     def __init__(self, name, fields):
-        print(name, fields)
         self.name = name
         self.fields = fields
 
