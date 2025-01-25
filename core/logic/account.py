@@ -29,7 +29,7 @@ class Account:
     # Conver json data to account
     @staticmethod
     def from_dict(data):
-        name = data.get("name", "No_Name")
+        name = data.get("filename", "No_Name")
         return Account(name, data)
     
     @staticmethod

@@ -1,16 +1,13 @@
-import tkinter as tk
-from tkinter import messagebox
+import dearpygui.dearpygui as dpg
 
-def create_main_menu(root):
-    #main menu
-    main_menu = tk.Menu(root)
-    root.config(menu = main_menu)
+TAG_MAIN_MENU = "Main"
 
-    #settings menu
-    setting_menu = tk.Menu(main_menu, tearoff=0)
-    main_menu.add_cascade(label="Settings", menu=setting_menu)
-    
-    #settings functions
-    setting_menu.add_command(label="About", command=lambda: messagebox.showinfo("info", "AutoSibil для криптообогачения"))
+def create_main_menu():
+    with dpg.window(tag=TAG_MAIN_MENU):
+        with dpg.menu_bar():
+            with dpg.menu(label="Settings"):
+                dpg.add_menu_item(label="About", callback=show_popup)
+                dpg.add_menu_item(label="Account settings", callback=show_popup)
 
-    return main_menu
+def show_popup():
+    print("click")

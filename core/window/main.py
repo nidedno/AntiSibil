@@ -1,17 +1,17 @@
-import tkinter as tk
-from .menu.main_menu import create_main_menu
+import dearpygui.dearpygui as dpg
+
+from .menu.main_menu import create_main_menu, TAG_MAIN_MENU
 from .menu.tabs_menu import create_tabs
 
 def start():
-    root = tk.Tk()
-    root.title("AutoSibil")
-    root.geometry("800x600")
+    dpg.create_context()
 
-    # main_menu
-    create_main_menu(root)
+    create_main_menu()
+    create_tabs()
 
-    # tabs
-    create_tabs(root)
-
-    root.mainloop()
-    
+    dpg.create_viewport(title='AntiSibil', width=600, height=400)
+    dpg.setup_dearpygui()
+    dpg.show_viewport()
+    dpg.set_primary_window(TAG_MAIN_MENU, True)
+    dpg.start_dearpygui()
+    dpg.destroy_context()

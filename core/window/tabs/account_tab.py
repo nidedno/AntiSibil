@@ -1,65 +1,61 @@
-import tkinter as tk
-import os
+import dearpygui.dearpygui as dpg
 
-from tkinter import ttk
+
+# utils
 from ...shared.utils import import_accounts, read_json
 from ...shared.constants import SETTINGS_FOLDER
 
+TAG_ACCOUNTS_TABLE = "Accounts"
+
 # Create accounts tabs with tree view.
-def create_accounts_tab(notebook):
-    tab_accounts = ttk.Frame(notebook)
-    notebook.add(tab_accounts, text='Accounts')
+def create_accounts_tab():
+    with dpg.tab(label="Accounts"):
+        dpg.add_spacer()
+        
+        # Horizontal group.
+        with dpg.group(horizontal=True):
+            dpg.add_text("Accounts")
+            dpg.add_button(label= "+")
 
-    # Add header
-    header_frame = tk.Frame(tab_accounts, bg="white")
-    header_frame.pack(fill=tk.X)
+        dpg.add_separator()
 
-    # Add label
-    header_label = tk.Label(header_frame, text="Accounts", bg="white", font=("Arial", 12))
-    header_label.pack(side=tk.LEFT, padx=5, pady=0)
+        # Add table.
+        try:
+            accounts = import_accounts()
+        except Exception as e:
+            dpg.add_text("No accounts")
+        else:
+            create_accounts_table(accounts)
 
-    # Add button on right
-    add_button = tk.Button(header_frame, text=" + ", bg="green", fg="white", font=("Arial", 12), command=lambda: add_acount(notebook))
-    add_button.pack(side=tk.RIGHT, padx=10, pady=5)
-
+# Create accounts table.
+def create_accounts_table(accounts):
     try:
-        accounts = import_accounts()
-    except Exception as e:
-        print(e)
-        ttk.Label(tab_accounts, text="Here's no accounts for now, try create a new accounts.").pack(padx=10, pady=10)
-    else:
-        create_accounts_view(tab_accounts, accounts)
+        # read all available fields.
+        fields = read_json(SETTINGS_FOLDER + "account.json")
+        with dpg.table(tag=TAG_ACCOUNTS_TABLE, label=TAG_ACCOUNTS_TABLE):
 
-def add_acount(notebook):
-    print(3)
+            fieldsNames = tuple(fields.keys())
+            # Add columns
+            for field in fieldsNames:
+                dpg.add_table_column(label=field)
 
-def accounts_tab_refresh():
-    print(2)
+            for account in accounts:
+                add_account(account, fields)
+    except:
+        dpg.add_text("Problem whle table creation.")
 
-def create_accounts_view(notebook, accounts):
-    # read all available fields.
-    fields = tuple(read_json(SETTINGS_FOLDER + "account.json").keys())
-    accounts_tree = ttk.Treeview(notebook)
-    accounts_tree["columns"] = fields
+# Method to add accounts.
+def add_account(account, fields):
+    # Add values.
+    with dpg.table_row():
+        for field in fields.keys():
+            value = "~" # it means that it's empty.
+            secret = False
 
-    # disable identifier.
-    # https://stackoverflow.com/questions/8688839/remove-empty-first-column-of-a-treeview-object
-    accounts_tree['show'] = 'headings'
-
-    # Add columns
-    for field in fields:
-        accounts_tree.column(field)
-        accounts_tree.heading(field, text=field)
-
-    # Add
-    for account in accounts:
-        values = []
-        for field in fields:
             if (account.contains_field(field)):
-                values.append(account.get(field))
-            else:
-                values.append("~")
-        print(account)
-        accounts_tree.insert('', 'end', values=tuple(values))
+                value = account.get(field)
+            
+            if (fields[field] == "secret"):
+                secret = True
 
-    accounts_tree.pack(expand=True, fill='both')
+            dpg.add_input_text(default_value=value, width=-1, password=secret)

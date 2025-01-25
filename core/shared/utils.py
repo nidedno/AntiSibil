@@ -9,10 +9,11 @@ def import_accounts():
     for filename in glob.glob(os.path.join(ACCOUNTS_FOLDER, '*.json')):
         with open(filename, 'r') as f:
             account_text = f.read()
+            
             account_json = json.loads(account_text)
+            account_json['filename'] = filename
 
-            name = account_json.get("name", "None")
-            account = Account(name=name, fields=account_json)
+            account = Account.from_dict(account_json)
             print(account)
             accounts.append(account)
 
