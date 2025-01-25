@@ -57,7 +57,20 @@ def add_account(account, fields):
             if (fields[field] == "secret"):
                 secret = True
 
-            dpg.add_input_text(default_value=value, width=-1, password=secret)
+            tag = account.get('filename') + field
+            input_field = dpg.add_input_text(default_value=value, width=-1, password=secret, tag=tag, readonly=True)
+            with dpg.popup(input_field, mousebutton=dpg.mvMouseButton_Right, ):
+                # Add menu options to the context menu
+                # TODO: fix strange behaviour with positioning.
+                dpg.add_menu_item(label="Edit", user_data=input_field, callback=edit_value)
+                dpg.add_menu_item(label="Copy", user_data=tag, callback=copy_value)
+
+def copy_value(sender, _, user_data):
+    value = dpg.get_value(user_data)
+    dpg.set_clipboard_text(value)
+
+def edit_value(_, __, user_data):
+    print(user_data)
 
 def create_account():
     try:
@@ -88,9 +101,10 @@ def save_account():
         else:
             accountData[field] = value
 
+    
     # create account
     name = accountData.get("name", "noName")
-
+    accountData['filename'] = name + '.json'
     # add account
     account = Account(name, accountData)
     account.save()

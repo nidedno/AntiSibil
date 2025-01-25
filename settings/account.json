@@ -1,6 +1,18 @@
 {
-    "name" : "string",
-    "mail" : "mail",
-    "password" : "secret",
-    "comment" : "This is a default account info, you can easely modify it future from app."
+    "name" : {
+        "filter": "default",
+        "readonly" : false
+    },
+    "mail" : {
+        "filter": "default",
+        "readonly" : false
+    },
+    "password" : {
+        "filter": "default",
+        "readonly" : false
+    },
+    "comment" : {
+        "filter": "default",
+        "readonly" : false
+    }
 }
