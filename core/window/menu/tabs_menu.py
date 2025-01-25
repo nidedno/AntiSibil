@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+from ..tabs.account_tab import create_accounts_tab
+
 def create_tabs(root):
     # Создание виджета Notebook
     notebook = ttk.Notebook(root)
@@ -12,14 +14,6 @@ def create_tabs(root):
 
     notebook.pack(expand=True, fill="both", side="top")
     root.mainloop()
-
-
-# Create accounts tabs
-def create_accounts_tab(notebook):
-    tab_accounts = ttk.Frame(notebook)
-    ttk.Label(tab_accounts, text="Here will be a list of accounts").pack(padx=10, pady=10)
-    
-    notebook.add(tab_accounts, text='Accounts') # add tab
 
 # Create projects tab
 def create_projects_tab(notebook):
