@@ -1,6 +1,6 @@
 from tkinter import messagebox
 import os, json, glob
-from constants import ACCOUNTS_FOLDER
+from .constants import ACCOUNTS_FOLDER
 
 # Loads all existing accounts
 def import_accounts():
@@ -11,8 +11,7 @@ def import_accounts():
             account = json.loads(account_text)
             accounts.append(account)
             
-
     if (len(accounts) == 0):
-        raise messagebox.showinfo(message="There no accounts found, try add them ;)")
+        raise "No accounts found."
     
     return accounts

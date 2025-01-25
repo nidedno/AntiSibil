@@ -1,0 +1,6 @@
+{
+    "name" : "string",
+    "mail" : "mail",
+    "password" : "password",
+    "comment" : "This is a default account info, you can easely modify it future from app."
+}

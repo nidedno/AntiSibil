@@ -1,4 +1,4 @@
-import core.window.mainWindow as mw # Import main window
+import core.window.main as mw # Import main window
 
 def main():
     mw.start() # Start application
