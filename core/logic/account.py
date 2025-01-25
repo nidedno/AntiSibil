@@ -4,7 +4,8 @@ import json
 # Accounts entry.
 # Contains account and all info which it can contains.
 class Account:
-    def __init__(self, name, **fields):
+    def __init__(self, name, fields):
+        print(name, fields)
         self.name = name
         self.fields = fields
 
@@ -15,21 +16,21 @@ class Account:
         return {"name": self.name, **self.fields}
     
     # return true/false that fields exists in dict.
-    def contains_feield(self, field):
-        return field in self.fields
+    def contains_field(self, field):
+        return field in self.fields.keys()
 
     # get fields
     def get(self, field):
-        if self.contains_feield(field) == False:
-            raise "Account {0} not contains field {1}".format(self.name, field)
+        if self.contains_field(field) == False:
+            raise Exception("Account {0} not contains field {1}".format(self.name, field))
 
         return self.fields[field]
 
     # Conver json data to account
     @staticmethod
     def from_dict(data):
-        name = data.pop("name", None)
-        return Account(name, **data)
+        name = data.get("name", "No_Name")
+        return Account(name, data)
     
     @staticmethod
     def to_dict(account):
