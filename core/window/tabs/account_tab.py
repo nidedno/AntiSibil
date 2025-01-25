@@ -1,38 +1,37 @@
 import dearpygui.dearpygui as dpg
-
-
-# utils
 from ...shared.utils import import_accounts, read_json
 from ...shared.constants import SETTINGS_FOLDER
+from ...logic.account import Account
 
-TAG_ACCOUNTS_TABLE = "Accounts"
+TAG_ACCOUNTS = "Accounts"
+TAG_ACCOUNTS_TABLE = "Accounts_Table"
+TAG_ACCOUNTS_ADD = "Accounts_Add"
+TAG_ACCOUNTS_REFRESH = "Accounts_Refresh"
+TAG_ACCOUNTS_SAVE = "Accounts_Save"
+TAG_ACCOUNT_FORM = "Accounts_Form"
 
 # Create accounts tabs with tree view.
 def create_accounts_tab():
-    with dpg.tab(label="Accounts"):
+    with dpg.tab(label="Accounts", tag=TAG_ACCOUNTS):
         dpg.add_spacer()
         
         # Horizontal group.
         with dpg.group(horizontal=True):
             dpg.add_text("Accounts")
-            dpg.add_button(label= "+")
-
+            dpg.add_button(label= "+", tag=TAG_ACCOUNTS_ADD, callback=create_account)
+            dpg.add_button(label="refresh", tag=TAG_ACCOUNTS_REFRESH, callback=refresh_table)
+            dpg.add_button(label="save", tag=TAG_ACCOUNTS_SAVE)
         dpg.add_separator()
 
         # Add table.
-        try:
-            accounts = import_accounts()
-        except Exception as e:
-            dpg.add_text("No accounts")
-        else:
-            create_accounts_table(accounts)
+        refresh_table()
 
 # Create accounts table.
 def create_accounts_table(accounts):
     try:
         # read all available fields.
         fields = read_json(SETTINGS_FOLDER + "account.json")
-        with dpg.table(tag=TAG_ACCOUNTS_TABLE, label=TAG_ACCOUNTS_TABLE):
+        with dpg.table(tag=TAG_ACCOUNTS_TABLE, label=TAG_ACCOUNTS_TABLE, parent=TAG_ACCOUNTS):
 
             fieldsNames = tuple(fields.keys())
             # Add columns
@@ -42,12 +41,12 @@ def create_accounts_table(accounts):
             for account in accounts:
                 add_account(account, fields)
     except:
-        dpg.add_text("Problem whle table creation.")
+        print("Problem whle table creation.")
 
 # Method to add accounts.
 def add_account(account, fields):
     # Add values.
-    with dpg.table_row():
+    with dpg.table_row(parent=TAG_ACCOUNTS_TABLE):
         for field in fields.keys():
             value = "~" # it means that it's empty.
             secret = False
@@ -59,3 +58,53 @@ def add_account(account, fields):
                 secret = True
 
             dpg.add_input_text(default_value=value, width=-1, password=secret)
+
+def create_account():
+    try:
+        fields = read_json(SETTINGS_FOLDER + "account.json")
+
+        with dpg.window(label="Account creation", modal=True, tag=TAG_ACCOUNT_FORM, show=True, autosize=True, on_close=lambda: dpg.delete_item(TAG_ACCOUNT_FORM)):
+            for field in fields.keys():
+                dpg.add_input_text(label=field, tag=field_to_tag(field))
+
+            with dpg.group(horizontal=True):
+                dpg.add_button(label="Add", callback=save_account)
+    except:
+        print("Problem in creation of form.")
+
+def field_to_tag(field):
+    return "tag_" + field + "_form"
+
+def save_account():
+    fields = read_json(SETTINGS_FOLDER + "account.json")
+    accountData = {}
+
+    # collect data from modal.
+    for field in fields.keys():
+        try:
+            value = dpg.get_value(field_to_tag(field))
+        except:
+            accountData[field] = ''   
+        else:
+            accountData[field] = value
+
+    # create account
+    name = accountData.get("name", "noName")
+
+    # add account
+    account = Account(name, accountData)
+    account.save()
+    add_account(account, fields)
+    
+    # close form
+    dpg.delete_item(TAG_ACCOUNT_FORM)
+    
+def refresh_table():
+    try:
+        if dpg.does_item_exist(TAG_ACCOUNTS_TABLE):
+            dpg.delete_item(TAG_ACCOUNTS_TABLE)
+        accounts = import_accounts()
+    except Exception as e:
+        dpg.add_text("No accounts")
+    else:
+        create_accounts_table(accounts)

@@ -1,5 +1,6 @@
 
 import json
+from ..shared.constants import ACCOUNTS_FOLDER
 
 # Accounts entry.
 # Contains account and all info which it can contains.
@@ -32,6 +33,6 @@ class Account:
         name = data.get("filename", "No_Name")
         return Account(name, data)
     
-    @staticmethod
-    def to_dict(account):
-        return False
+    def save(self):
+        with open(ACCOUNTS_FOLDER + self.name + ".json", 'w') as f:
+            json.dump(self.fields, f)
