@@ -1,0 +1,1 @@
+{"name": {"secret": false, "readonly": false}, "mail": {"secret": false, "readonly": true}, "password": {"secret": true, "readonly": true}, "comment": {"secret": false, "readonly": false}}
