@@ -47,9 +47,9 @@ def add_settings_option(fields):
     }
 
     with dpg.table_row(parent=TAG_SETTINGS_TABLE):
-        dpg.add_input_text(tag=option, width=-1, default_value='')
-        dpg.add_combo([True, False], tag=option, default_value=False)
-        dpg.add_combo([True, False], tag=option, default_value=False)
+        dpg.add_input_text(tag=option+"_key", width=-1, default_value='')
+        dpg.add_combo([True, False], tag=option+"_secret", default_value=False)
+        dpg.add_combo([True, False], tag=option+"_readonly", default_value=False)
 
 # Save function, now:
 # 0 - it's a key

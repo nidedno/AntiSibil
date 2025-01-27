@@ -122,51 +122,59 @@ def refresh_table():
         accounts = import_accounts()
         GLOBAL_STATE["accounts"] = accounts
     except Exception as e:
-        dpg.add_text("No accounts", e)
+        fields = read_json(SETTINGS_FOLDER + "account.json")
+        with dpg.table(tag=TAG_ACCOUNTS_TABLE, label=TAG_ACCOUNTS_TABLE, parent=TAG_ACCOUNTS):
+            fieldsNames = tuple(fields.keys())
+            # Add columns
+            for field in fieldsNames:
+                dpg.add_table_column(label=field)
     else:
         create_accounts_table(accounts)
         
 # soft save
 def save_table(__, _, userData):
-    # receive all available fields.
-    fields = list(read_json(SETTINGS_FOLDER + "account.json").keys())
+    try:
+        # receive all available fields.
+        fields = list(read_json(SETTINGS_FOLDER + "account.json").keys())
 
-    # get table rows.
-    table_rows_ids = dpg.get_item_children(userData)[1]
-    accounts = []
-    
-    for i in range(len(table_rows_ids)):
-        # get row data.
-        row_id = table_rows_ids[i]
+        # get table rows.
+        table_rows_ids = dpg.get_item_children(userData)[1]
+        accounts = []
+        
+        for i in range(len(table_rows_ids)):
+            # get row data.
+            row_id = table_rows_ids[i]
 
-        #create save account
-        account_save_data = {}
+            #create save account
+            account_save_data = {}
 
-        row_inputs_ids = dpg.get_item_children(row_id)[1]
-        # row represented in global state['accounts'] so simply:
-        for j in range(len(row_inputs_ids)):
-            field = fields[j]
-            value = row_inputs_ids[j]
-            account_save_data[field] = dpg.get_value(value)
+            row_inputs_ids = dpg.get_item_children(row_id)[1]
+            # row represented in global state['accounts'] so simply:
+            for j in range(len(row_inputs_ids)):
+                field = fields[j]
+                value = row_inputs_ids[j]
+                account_save_data[field] = dpg.get_value(value)
 
-        accounts.append(account_save_data)
+            accounts.append(account_save_data)
 
-    # Soft update.
-    i = 0
-    for filename in glob.glob(os.path.join(ACCOUNTS_FOLDER, '*.json')):
-        with open(filename, 'r+') as account_file:
-            account_text = account_file.read()
-            account_json = json.loads(account_text)
+        # Soft update.
+        i = 0
+        for filename in glob.glob(os.path.join(ACCOUNTS_FOLDER, '*.json')):
+            with open(filename, 'r+') as account_file:
+                account_text = account_file.read()
+                account_json = json.loads(account_text)
 
-            for key in accounts[i].keys():
-                if (key in account_json.keys()):
-                    account_json[key] = accounts[i][key]
-                    #print('set', key, account_json[key], '->', accounts[i][key])
+                for key in accounts[i].keys():
+                    if (key in account_json.keys()):
+                        account_json[key] = accounts[i][key]
+                        #print('set', key, account_json[key], '->', accounts[i][key])
 
-            account_file.seek(0)  
-            json.dump(account_json, account_file, indent=6)
-            account_file.truncate()
-        account_file.close()
-        i+=1
+                account_file.seek(0)  
+                json.dump(account_json, account_file, indent=6)
+                account_file.truncate()
+            account_file.close()
+            i+=1
 
-    refresh_table()
+        refresh_table()
+    except Exception as e:
+        print(e)
