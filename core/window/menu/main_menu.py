@@ -17,6 +17,7 @@ def create_main_menu():
 def show_popup():
     print("click")
 
+# TODO:move to settings all what below.
 def create_account_settings():
     fields = read_json(SETTINGS_FOLDER + "account.json")
 

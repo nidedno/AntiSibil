@@ -1,17 +1,26 @@
 import dearpygui.dearpygui as dpg
 
 from ..tabs.account_tab import create_accounts_tab
+from ..tabs.search_tab import create_search_tab
+
 from .main_menu import TAG_MAIN_MENU
-TAG_PARENT_TABS = "Tabs"
+
+TAG_PARENT_TABS = "Tab_projects"
+TAG_ANALYTIC_TABS = "Tab_analytic"
 
 def create_tabs():
     # Создание виджета Notebook
-    with dpg.tab_bar(tag=TAG_PARENT_TABS, parent=TAG_MAIN_MENU):
-        create_accounts_tab()
-        create_projects_tab()
-        create_scenarios_tab()
-        create_activity_tab()
-
+    with dpg.tab_bar(tag="MainTab", label="Analytic", parent=TAG_MAIN_MENU):
+        with dpg.tab(label="Analytic",):
+            with dpg.tab_bar(label="Search", tag=TAG_ANALYTIC_TABS):
+                create_search_tab()
+            
+        with dpg.tab(label="Autostuff"):
+            with dpg.tab_bar(tag=TAG_PARENT_TABS):
+                create_accounts_tab()
+                create_projects_tab()
+                create_scenarios_tab()
+                create_activity_tab()
 
 # Create projects tab
 def create_projects_tab():

@@ -6,7 +6,12 @@ accounts/*
 projects/*
 scenarious/*
 
+# ignore test
+test/*
+
 # stay folders
 !accounts/.gitkeep 
 !projects/.gitkeep
 !scenarious/.gitkeep
+
+
